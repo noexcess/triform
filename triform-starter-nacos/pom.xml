@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>io.triform</groupId>
+        <artifactId>triform</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>triform-starter-nacos</artifactId>
+    <description>micro 形态推荐入口: triform-starter + Nacos 服务发现(Dubbo 3.3 核心已内置 nacos registry 实现, 仅需 nacos-client 经此传入)。集中配置(nacos-config)为可选项: 宿主显式引入并 import triform-shared.yml——不默认携带, 因其会触发 spring.config.import 强制检查</description>
+    <dependencies>
+        <dependency>
+            <groupId>io.triform</groupId>
+            <artifactId>triform-starter</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+        </dependency>
+    </dependencies>
+</project>

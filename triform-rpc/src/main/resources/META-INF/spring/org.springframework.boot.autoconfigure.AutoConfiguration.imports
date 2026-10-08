@@ -1,0 +1,3 @@
+io.triform.rpc.support.RpcTransportAutoConfiguration
+io.triform.rpc.support.RpcConsumerAutoConfiguration
+io.triform.rpc.support.RpcComponentsAutoConfiguration

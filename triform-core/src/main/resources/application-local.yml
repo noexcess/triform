@@ -1,0 +1,16 @@
+# ==========================================================================
+# 本地开发覆盖(profile=local),位于 triform-core,所有服务可见。
+#
+# 用法:IDEA/.run 共享运行配置与 scripts 均以 -Dspring.profiles.active=local(微服务再加 micro)启动。
+# 语义:profile 专属文件优先级高于 application.yml 与 import 进来的 triform-shared.yml,
+#      故这里放"本地开发与生产不同"的项,避免污染共享默认值。
+# ==========================================================================
+
+ticket:
+  mq:
+    # 本地 MQ 不可达时也要能起(消费者静默不可用,消息堆积,见 05 文档 §1.1 代价说明)
+    startup-resilient: true
+
+logging:
+  level:
+    io.triform.core.datascope: debug

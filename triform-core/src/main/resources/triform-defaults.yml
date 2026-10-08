@@ -1,0 +1,71 @@
+# ==========================================================================
+# 底座共享默认值(位于 triform-core, 由 triform-shared.yml 引入)
+#
+# 定位: 三形态 RPC 底座的公共项默认值 —— 优雅停机 / 采样 / RPC 传输 / 可观测。
+# 覆盖顺序(低 → 高):
+#   triform-defaults.yml  <  Nacos  <  服务自身 application.yml  <  application-{profile}.yml
+#
+# 新增服务只需在 application.yml 中:
+#     spring:
+#       config:
+#         import: classpath:triform-shared.yml
+# 数据库/缓存/MQ 等宿主环境事实由各服务自配, 不在底座默认值内(设计基线/44)。
+# ==========================================================================
+
+server:
+  # 优雅停机: 发版重启不再硬切在途请求, 等待窗口内自然结束
+  shutdown: graceful
+
+spring:
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
+  main:
+    # 禁止 Bean 定义覆盖: 同 FQN 重复定义启动即失败(fail-fast), 禁止用 overriding=true 掩盖混装
+    allow-bean-definition-overriding: false
+  servlet:
+    multipart:
+      max-file-size: 1024MB
+      max-request-size: 1024MB
+
+triform:
+  # 部署环境标识: 非生产配如 TEST(随 Result.env 返回, 便于区分问题来源环境); 生产留空
+  env: ""
+  rpc:
+    # 消费侧代理类型: dubbo(默认) | http(备选, HTTP/Feign)。
+    # http 需要: ① 双方 internal-token 一致; ② 目标服务开启 http-expose。
+    transport: ${TRIFORM_RPC_TRANSPORT:dubbo}
+    # 提供侧: 是否开放内部 HTTP RPC 端点 POST /internal/rpc/{facade}/{method}。
+    # 默认关闭(内部端点扩大攻击面); 开启前必须配置 internal-token, 否则启动失败。
+    http-expose: ${TRIFORM_RPC_HTTP_EXPOSE:false}
+    # 服务间内部令牌: 所有服务配同一个值(建议由 Nacos/环境变量下发, 不进代码库);
+    # 与用户会话 X-Token 是两回事。
+    internal-token: ${TRIFORM_RPC_INTERNAL_TOKEN:}
+    # HTTP 传输超时(连接 3s / 读 5s, 与 Dubbo 侧 timeout=5000 对齐)
+    connect-timeout-ms: ${TRIFORM_RPC_CONNECT_TIMEOUT_MS:3000}
+    read-timeout-ms: ${TRIFORM_RPC_READ_TIMEOUT_MS:5000}
+
+# ===== 可观测 =====
+# 端点只暴露 health/info/metrics: env/beans/heapdump 等敏感端点保持关闭。
+management:
+  tracing:
+    sampling:
+      # 无外部采样后端: 置 1.0 保证每个请求都带 traceId(排障可抓); 接入 zipkin/otel 后再下调控成本
+      probability: 1.0
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+
+# Dubbo: 关闭 QoS 运维端口(默认 22222, 多 Dubbo 进程并存会争抢; 关闭同时收紧安全)
+dubbo:
+  application:
+    qos-enable: false
+    qos-accept-foreign-ip: false
+
+logging:
+  # pattern(含 [服务名,traceId,spanId])与文件落盘由 logback-spring.xml 统一接管
+  level:
+    io.triform: info

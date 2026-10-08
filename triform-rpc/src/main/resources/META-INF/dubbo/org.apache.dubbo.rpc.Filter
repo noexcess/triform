@@ -1,0 +1,2 @@
+iamContextConsumerFilter=io.triform.rpc.context.IamContextConsumerFilter
+iamContextProviderFilter=io.triform.rpc.context.IamContextProviderFilter

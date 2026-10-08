@@ -1,0 +1,5 @@
+io.triform.core.rpc.IndexDiscoveredFacade
+io.triform.core.rpc.IndexLocalFacade
+io.triform.core.rpc.DubboConsumerRegistrarFactorySubInterfaceTest$Parent
+io.triform.core.rpc.DubboConsumerRegistrarMultiParentTest$ContractA
+io.triform.core.rpc.DubboConsumerRegistrarMultiParentTest$ContractB
