@@ -1,0 +1,19 @@
+server:
+  port: 9085
+
+spring:
+  application:
+    name: sample-all-in-one
+  # mono 无需关注册: 底座 TriformDeploymentEnvironmentPostProcessor 已自动关闭(可显式覆盖)
+  autoconfigure:
+    exclude:
+      - org.apache.dubbo.spring.boot.autoconfigure.DubboAutoConfiguration
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+
+deployment:
+  mode: mono

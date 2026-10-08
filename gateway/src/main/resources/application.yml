@@ -1,0 +1,29 @@
+server:
+  port: 19080
+
+spring:
+  application:
+    name: sample-gateway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+    gateway:
+      routes:
+        # 安全默认: 内部 RPC 端点禁止经网关暴露(显式拒绝优先于"无路由 404")。
+        # 注: PathPattern 不支持中缀通配, 若下游服务配置了 server.servlet.context-path=/app,
+        #     需按前缀补一条 Path=/app/internal/** 的拒绝路由(服务自身鉴权已按应用内路径兜底, 见 InternalPaths)。
+        - id: deny-internal-rpc
+          uri: no://op
+          predicates:
+            - Path=/internal/**
+          filters:
+            - SetStatus=403
+        - id: sample-app
+          uri: lb://sample-app
+          predicates:
+            - Path=/app/**
+        - id: sample-echo
+          uri: lb://sample-echo
+          predicates:
+            - Path=/echo/**

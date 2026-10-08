@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>io.triform</groupId>
+        <artifactId>triform</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>sample-app</artifactId>
+
+    <description>样例消费方: 构造器注入 GreetingFacade(对方 api 模块), 零 RPC 注解零配置</description>
+    <dependencies>
+        <!-- 宿主姿势: 单一入口依赖(含 Nacos 发现与 Facade 元数据装配) -->
+        <dependency>
+            <groupId>io.triform</groupId>
+            <artifactId>triform-starter-nacos</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.triform</groupId>
+            <artifactId>sample-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <!-- 双产物: 普通 jar 供 all-in-one 依赖; 带 classifier 的可执行 jar 供 micro 独立部署 -->
+                    <classifier>exec</classifier>
+                    <mainClass>io.triform.sample.app.SampleAppApplication</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

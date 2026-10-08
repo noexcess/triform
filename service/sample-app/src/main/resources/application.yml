@@ -1,0 +1,6 @@
+server:
+  port: 9082
+
+spring:
+  application:
+    name: sample-app

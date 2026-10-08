@@ -1,0 +1,20 @@
+deployment:
+  mode: micro
+
+spring:
+  application:
+    name: sample-echo
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+
+dubbo:
+  application:
+    name: sample-echo
+    register-mode: interface
+  registry:
+    address: nacos://${NACOS_SERVER_ADDR:127.0.0.1:8848}
+  protocol:
+    name: dubbo
+    port: 20881
